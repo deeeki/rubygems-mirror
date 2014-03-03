@@ -44,16 +44,37 @@ class Gem::Mirror
     gems
   end
 
+  def recent_gems
+    update_specs unless File.exists?(to(SPECS_FILE))
+
+    gems = Marshal.load(Gem.read_binary(to(SPECS_FILE)))
+
+    gem_versions = {}
+    gems.each do |name, ver, plat|
+      gem_versions[name] ||= []
+      gem_versions[name] << ver
+    end
+
+    gem_versions.each do |name, versions|
+      gem_versions[name] = versions.sort.reverse.slice(0, 10)
+    end
+
+    gems.map! do |name, ver, plat|
+      gem_versions[name].include?(ver) ? "#{name}-#{ver}#{"-#{plat}" unless plat == RUBY}.gem" : nil
+    end
+    gems.compact
+  end
+
   def existing_gems
     Dir[to('gems', '*.gem')].entries.map { |f| File.basename(f) }
   end
 
   def gems_to_fetch
-    gems - existing_gems
+    recent_gems - existing_gems
   end
 
   def gems_to_delete
-    existing_gems - gems
+    existing_gems - recent_gems
   end
 
   def update_gems
