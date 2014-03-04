@@ -17,17 +17,9 @@ will maintain stability in master.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-    gem 'rubygems-mirror'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install rubygems-mirror
+1. Clone it
+2. Build it `gem build /path/to/rubygems-mirror.gemspec`
+3. Install it `gem install /path/to/rubygems-mirror-x.x.x.gem --local`
 
 ## Usage
 
